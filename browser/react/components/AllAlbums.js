@@ -1,9 +1,26 @@
 import React, { Component } from 'react';
+import axios from 'axios';
+import { Link } from 'react-router-dom';
 
 export default class AllAlbums extends Component {
+  constructor ( props ) {
+    super( props )
+    this.state = {
+      albums: []
+    }
+  }
+
+  componentDidMount () {
+    axios.get('/api/albums/')
+      .then(res => res.data)
+      .then(albums => {
+        this.setState({ albums })
+      });
+  }
 
   render () {
-    const albums = this.props.albums;
+    console.log( this.props )
+    const albums = this.state.albums;
     const selectAlbum = this.props.selectAlbum;
 
     return (
@@ -11,9 +28,9 @@ export default class AllAlbums extends Component {
         <h3>Albums</h3>
         <div className="row">
         {
-          albums.map(album => (
+          albums.map( album => (
             <div className="col-xs-4" key={ album.id }>
-              <a className="thumbnail" href="#" onClick={() => selectAlbum(album.id)}>
+              <Link to={ `/albums/${album.id}` } onClick={ () => selectAlbum( album.id ) }>
                 <img src={ album.imageUrl } />
                 <div className="caption">
                   <h5>
@@ -21,7 +38,7 @@ export default class AllAlbums extends Component {
                   </h5>
                   <small>{ album.songs.length } songs</small>
                 </div>
-              </a>
+              </Link>
             </div>
           ))
         }
@@ -30,3 +47,4 @@ export default class AllAlbums extends Component {
     );
   }
 }
+
