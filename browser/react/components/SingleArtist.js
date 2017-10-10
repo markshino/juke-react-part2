@@ -1,14 +1,16 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
 import Songs from '../components/Songs';
+import { Link } from 'react-router-dom';
 import AllAlbums from './AllAlbums';
 
 export default class SingleArtist extends Component {
     constructor ( props ) {
         super( props )
         this.state = {
-            selectedArtist: {}
+            artist:{},
+            albums:[],
+            songs:[]
         }
     }
 
@@ -19,22 +21,28 @@ export default class SingleArtist extends Component {
         const songs = axios.get( `/api/artists/${artistId}/songs` ).then(res => res.data);
         
         Promise.all([name, albums, songs])
-        .then( artistData => {
-            this.setState({selectedArtist: artistData});
+        .then( ([artist, albums, songs]) => {
+            this.setState({
+                artist,
+                albums,
+                songs
+            });
         })
         
     }
 
   render () {
 
-    const artist = this.state.selectedArtist;
+    const {artist, albums, songs} = this.state;
 
     return (
         <div>
-            <h3>{artist.name}</h3>
-            <AllAlbums albums={ artist[1] } />
-            <Songs songs={ artist[2] }/>
+            <h3>{ artist.name }</h3>
+            <ul className="nav nav-tabs">
+            <li><Link to = { `/albums/${artist.id}` }>ALBUMS</Link></li>
+            <li><Link to={ `/songs/${artist.id}` }>SONGS</Link></li>
+            </ul>
         </div>
     )
   }
-}  
+}
