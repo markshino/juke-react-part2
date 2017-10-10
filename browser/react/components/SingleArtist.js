@@ -19,9 +19,8 @@ export default class SingleArtist extends Component {
         const songs = axios.get( `/api/artists/${artistId}/songs` ).then(res => res.data);
         
         Promise.all([name, albums, songs])
-        .then( res => {
-            console.log(res);
-            this.setState({selectedArtist: res});
+        .then( artistData => {
+            this.setState({selectedArtist: artistData});
         })
         
     }
@@ -33,6 +32,8 @@ export default class SingleArtist extends Component {
     return (
         <div>
             <h3>{artist.name}</h3>
+            <AllAlbums albums={ artist[1] } />
+            <Songs songs={ artist[2] }/>
         </div>
     )
   }
